@@ -18,8 +18,11 @@ public class Meet0TeleOp extends LinearOpMode {
   private DcMotor backRightM;
   private DcMotor frontLeftM;
   private DcMotor frontRightM;
+  private DcMotor intakeM;
+  private DcMotor launcherM;
 
 //classifying our servos
+  private Servo blockerS;
 
 //classifying the game controller aspects
   private boolean leftBumper;
@@ -27,6 +30,9 @@ public class Meet0TeleOp extends LinearOpMode {
   private double leftTrigger;
   private double rightTrigger;
   private double gamepad2Y;
+
+//servo set position variables
+  private double blockerSPosition = 0;
 
 
   private DcMotor spin;
@@ -52,21 +58,29 @@ public class Meet0TeleOp extends LinearOpMode {
     backRightM = hardwareMap.get(DcMotor.class, "backRightM");
     frontLeftM = hardwareMap.get(DcMotor.class, "frontLeftM");
     backLeftM = hardwareMap.get(DcMotor.class, "backLeftM");
+    intakeM = hardwareMap.get(DcMotor.class, "intakeM");
+    launcherM = hardwareMap.get(DcMotor.class, "launcherM");
 
     frontRightM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     backRightM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     frontLeftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     backLeftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    intakeM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    launcherM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     frontLeftM.setDirection(DcMotor.Direction.FORWARD);
     frontRightM.setDirection(DcMotor.Direction.REVERSE);
     backLeftM.setDirection(DcMotor.Direction.FORWARD);
     backRightM.setDirection(DcMotor.Direction.REVERSE);
+    intakeM.setDirection(DcMotor.Direction.REVERSE);
+    launcherM.setDirection(DcMotor.Direction.REVERSE);
 
     frontLeftM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     frontRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     backLeftM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     backRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    intakeM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    launcherM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
       waitForStart();
       // Wait for the game to start (driver presses PLAY)
@@ -84,46 +98,19 @@ public class Meet0TeleOp extends LinearOpMode {
         speed but you could also set it to the joystick value using 
         armM.setPower(yInputtedPower); or armM.setPower(gamepad2.left_stick_y); */
 
-        //arm movement
-          if (yInputtedPower > 0.65){
-            armM.setPower(0.5);
-          } else if (yInputtedPower < -0.65){
-            armM.setPower(-0.5);
-          } else if (yInputtedPower > 0.65){
-            armM.setPower(0.75);
-          } else if (yInputtedPower < -0.65){
-            armM.setPower(-0.75);
-          } else {
-            armM.setPower(0);
+        //servo set positions
+          //open
+          if (gamepad2.a){
+            blockerSPosition = 0.5;
+            nameTBD.setPosition(blockerSPosition);
+          }
+          //close
+          if (gamepad2.x){
+            blockerS{psotopm = 0;
+            nameTBD.setPosition(blockerSPosition);
           }
 
-      //claw placement when open and closed
-        if (gamepad2.dpad_left){              //left open
-          leftClawS.setPosition(.6);
-        } else if (gamepad2.dpad_right){      //left close
-          leftClawS.setPosition(.25);
-        } else if (gamepad2.x){               //right close
-          rightClawS.setPosition(.8);        
-        } else if (gamepad2.b){               //right open
-          rightClawS.setPosition(.4);       
-        } else if (gamepad2.y){               //both open
-          leftClawS.setPosition(.6);
-          rightClawS.setPosition(.4);
-        } else if (gamepad2.a){               //both close
-          leftClawS.setPosition(.25);
-          rightClawS.setPosition(.8);
-        }
-
-      //swivel placement - swivel this year?
-        if (gamepad1.dpad_up){
-          swivelS.setPosition(0);
-        } else if (gamepad1.dpad_left){
-          swivelS.setPosition(.05);
-        } else if (gamepad1.dpad_right){
-          swivelS.setPosition(.1);
-        } else if (gamepad1.dpad_down){
-          swivelS.setPosition(.325);
-        }
+     
 
 //code practice       
   //MECANUM WHEELS
