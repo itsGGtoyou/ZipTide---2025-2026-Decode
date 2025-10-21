@@ -24,7 +24,7 @@ public class Meet0Auto extends LinearOpMode {
     private DcMotor frontLeftM;
     private DcMotor frontRightM;
     private DcMotor intakeM;
-    private DcMotor flywheel;
+    private DcMotor outtakeM;
 
     private Servo gateS;
     
@@ -40,28 +40,28 @@ public class Meet0Auto extends LinearOpMode {
         frontLeftM = hardwareMap.get(DcMotor.class, "frontLeftM");
         backLeftM = hardwareMap.get(DcMotor.class, "backLeftM");
         intakeM = hardwareMap.get(DcMotor.class, "intakeM");
-        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        outtakeM = hardwareMap.get(DcMotor.class, "outtakeM");
         
         frontRightM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        outtakeM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         
         frontLeftM.setDirection(DcMotor.Direction.REVERSE);
         frontRightM.setDirection(DcMotor.Direction.FORWARD);
         backLeftM.setDirection(DcMotor.Direction.REVERSE);
         backRightM.setDirection(DcMotor.Direction.FORWARD);
         intakeM.setDirection(DcMotor.Direction.REVERSE);
-        flywheel.setDirection(DcMotor.Direction.REVERSE);
+        outtakeM.setDirection(DcMotor.Direction.REVERSE);
         
         frontLeftM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        outtakeM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
          
         
         waitForStart();
@@ -73,7 +73,7 @@ public class Meet0Auto extends LinearOpMode {
         frontLeftM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        flywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        outtakeM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
   private void drive(double speed, int leftTarget, int rightTarget, String direction) {
         reset();
@@ -141,28 +141,28 @@ public class Meet0Auto extends LinearOpMode {
         
         if(direction == "in") {
             intakeM.setTargetPosition(newIntake);
-            flywheel.setTargetPosition(0);
+            outtakeM.setTargetPosition(0);
             telemetry.addData("scooping up");
             telemetry.update();
         } else if (direction == "out") {
-            flywheel.setTargetPosition(newOuttake);
+            outtakeM.setTargetPosition(newOuttake);
             intakeM.setTargetPosition(0);
             telemetry.addData("launching");
             telemetry.update();
         }
         
         intakeM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        flywheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        outtakeM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         
         intakeM.setPower(speed);
-        flywheel.setPower(speed);
+        outtakeM.setPower(speed);
         
         
-        while(opModeIsActive() && intakeM.isBusy() && flywheel.isBusy()) {
+        while(opModeIsActive() && intakeM.isBusy() && outtakeM.isBusy()) {
             telemetry.addData("Path1",  "Running to %7d :%7d %7d :%7d", newIntake,  newOuttake);
             telemetry.addData("Path2",  "Running at %7d :%7d :%7d :%7d",
                         intakeM.getCurrentPosition(),
-                        flywheel.getCurrentPosition());
+                        outtakeM.getCurrentPosition());
             telemetry.update();
         }
         sleep(300);
