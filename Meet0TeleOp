@@ -19,10 +19,10 @@ public class Meet0TeleOp extends LinearOpMode {
   private DcMotor frontLeftM;
   private DcMotor frontRightM;
   private DcMotor intakeM;
-  private DcMotor launcherM;
+  private DcMotor flywheel;
 
 //classifying our servos
-  private Servo blockerS;
+  private Servo gateS;
 
 //classifying the game controller aspects
   private boolean leftBumper;
@@ -32,7 +32,7 @@ public class Meet0TeleOp extends LinearOpMode {
   private double gamepad2Y;
 
 //servo set position variables
-  private double blockerSPosition = 0;
+  private double gateSPosition = 0;
 
 
   private DcMotor spin;
@@ -59,28 +59,28 @@ public class Meet0TeleOp extends LinearOpMode {
     frontLeftM = hardwareMap.get(DcMotor.class, "frontLeftM");
     backLeftM = hardwareMap.get(DcMotor.class, "backLeftM");
     intakeM = hardwareMap.get(DcMotor.class, "intakeM");
-    launcherM = hardwareMap.get(DcMotor.class, "launcherM");
+    flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
     frontRightM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     backRightM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     frontLeftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     backLeftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     intakeM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    launcherM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     frontLeftM.setDirection(DcMotor.Direction.FORWARD);
     frontRightM.setDirection(DcMotor.Direction.REVERSE);
     backLeftM.setDirection(DcMotor.Direction.FORWARD);
     backRightM.setDirection(DcMotor.Direction.REVERSE);
     intakeM.setDirection(DcMotor.Direction.REVERSE);
-    launcherM.setDirection(DcMotor.Direction.REVERSE);
+    flywheel.setDirection(DcMotor.Direction.REVERSE);
 
     frontLeftM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     frontRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     backLeftM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     backRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     intakeM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    launcherM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
       waitForStart();
       // Wait for the game to start (driver presses PLAY)
@@ -101,13 +101,13 @@ public class Meet0TeleOp extends LinearOpMode {
         //servo set positions
           //open
           if (gamepad2.a){
-            blockerSPosition = 0.5;
-            nameTBD.setPosition(blockerSPosition);
+            gateSPosition = 0.5;
+            nameTBD.setPosition(gateSPosition);
           }
           //close
           if (gamepad2.x){
-            blockerS{psotopm = 0;
-            nameTBD.setPosition(blockerSPosition);
+            gateS{psotopm = 0;
+            nameTBD.setPosition(gateSPosition);
           }
 
      
@@ -154,6 +154,10 @@ public class Meet0TeleOp extends LinearOpMode {
         frontRightM.setPower(frontRightPower / 2);
         backLeftM.setPower(backLeftPower / 2);
         backRightM.setPower(backRightPower / 2);
+      }
+      //ASSIGN POWER LAUNCHER/INTAKE
+      if (gamepad2.y){
+          flywheel.setPower(0.88);
       }
       // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
