@@ -32,8 +32,7 @@ public class Meet0TeleOp extends LinearOpMode {
   private double gamepad2Y;
 
 //servo set position variables
-  private double gateSPosition = 0;
-
+  private double gateSPosition = 0.7;
 
   private DcMotor spin;
 
@@ -60,18 +59,19 @@ public class Meet0TeleOp extends LinearOpMode {
     backLeftM = hardwareMap.get(DcMotor.class, "backLeftM");
     intakeM = hardwareMap.get(DcMotor.class, "intakeM");
     flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+    gateS = hardwareMap.get(Servo.class, "gateS");
 
     frontRightM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     backRightM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     frontLeftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     backLeftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     intakeM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-    frontLeftM.setDirection(DcMotor.Direction.FORWARD);
+    frontLeftM.setDirection(DcMotor.Direction.REVERSE);
     frontRightM.setDirection(DcMotor.Direction.REVERSE);
     backLeftM.setDirection(DcMotor.Direction.FORWARD);
-    backRightM.setDirection(DcMotor.Direction.REVERSE);
+    backRightM.setDirection(DcMotor.Direction.FORWARD);
     intakeM.setDirection(DcMotor.Direction.REVERSE);
     flywheel.setDirection(DcMotor.Direction.REVERSE);
 
@@ -100,14 +100,16 @@ public class Meet0TeleOp extends LinearOpMode {
 
         //servo set positions
           //open
-          if (gamepad2.a){
-            gateSPosition = 0.5;
-            nameTBD.setPosition(gateSPosition);
+          if (gamepad2.dpad_down){
+            gateSPosition = 0.9;
+            gateS.setPosition(gateSPosition);
+            sleep(1000);
           }
           //close
-          if (gamepad2.x){
-            gateS{psotopm = 0;
-            nameTBD.setPosition(gateSPosition);
+          if (gamepad2.dpad_up){
+            gateSPosition = 1;
+            gateS.setPosition(gateSPosition);
+            sleep(1000);
           }
 
      
@@ -157,8 +159,14 @@ public class Meet0TeleOp extends LinearOpMode {
       }
       //ASSIGN POWER LAUNCHER/INTAKE
       if (gamepad2.y){
-          flywheel.setPower(0.88);
+          flywheel.setPower(0.87);
+      } else if (gamepad2.a){
+          intakeM.setPower(0.7);
+      } else {
+          flywheel.setPower(0);
+          intakeM.setPower(0);
       }
+      
       // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
