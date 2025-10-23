@@ -68,6 +68,12 @@ public class Meet0Auto extends LinearOpMode {
 
         drive(0.2, 5, 7, "straight");
         launch(100);
+        sleep(1000);
+        launch(100);
+        sleep(1000);
+        launch(100);
+        sleep(1000);
+        drive(0.2, 10, 10, "straight");
 
     }
 
@@ -155,11 +161,20 @@ public class Meet0Auto extends LinearOpMode {
       sleep(300);
     }
 
+    public void openGate(){
+      gateS.setPosition(1);
+    }
+    public void closeGate(){
+      gateS.setPosition(0.7);
+    }
+
     private void launch(int launch) {
       reset();
       launch *= 45;
       
       newLaunch = launch;
+
+      openGate();
       
       flywheel.setTargetPosition(newLaunch);
       telemetry.addData("weeeeeeee!");
@@ -174,6 +189,9 @@ public class Meet0Auto extends LinearOpMode {
         telemetry.addData("Path2",  "Running at %7d :%7d :%7d :%7d", flywheel.getCurrentPosition());
         telemetry.update();
       }
+
+      closeGate();
+
       sleep(300);
-    }  
+    }
 }
