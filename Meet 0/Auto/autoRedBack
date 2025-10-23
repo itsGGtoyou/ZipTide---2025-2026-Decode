@@ -15,9 +15,9 @@ import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.robot.Robot;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 
-@Autonomous(name="Meet0Auto", group="Linear Opmode")
+@Autonomous(name="autoRedBack", group="Linear Opmode")
 
-public class Meet0Auto extends LinearOpMode {
+public class autoRedBack extends LinearOpMode {
   private ElapsedTime runtime = new ElapsedTime();
   private DcMotor backLeftM;
   private DcMotor backRightM;
