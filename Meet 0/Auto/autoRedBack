@@ -73,6 +73,7 @@ public class autoRedBack extends LinearOpMode {
         sleep(1000);
         launch(100);
         sleep(1000);
+        drive(0.2, -5, -7, "straight");
         drive(0.2, 10, 10, "straight");
 
     }
