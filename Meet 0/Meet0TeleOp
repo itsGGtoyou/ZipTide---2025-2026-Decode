@@ -121,7 +121,7 @@ public class Meet0TeleOp extends LinearOpMode {
         rotate = gamepad1.right_stick_x;
         strafe = gamepad1.left_stick_x;
       //This is how we end up setting those values
-      //You don't really have to memorize something like this just sorta keep in kind how this works
+      //You don't really have to memorize something like this just sorta keep in mind how this works
         frontLeftPower = forward - (strafe + rotate);
         frontRightPower = forward + (strafe + rotate);
         backLeftPower = forward + (strafe - rotate);
