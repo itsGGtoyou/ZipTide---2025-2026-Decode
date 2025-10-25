@@ -99,8 +99,9 @@ public class Meet0TeleOp extends LinearOpMode {
         armM.setPower(yInputtedPower); or armM.setPower(gamepad2.left_stick_y); */
 
         //servo set positions
-          flywheel.setPower(0.87);
-        
+
+          gateS.setPosition(0.8);
+
           if (gamepad2.dpad_down){
             gateSPosition = 1;
             gateS.setPosition(gateSPosition);
@@ -108,6 +109,12 @@ public class Meet0TeleOp extends LinearOpMode {
             gateSPosition = 0.8;
             gateS.setPosition(gateSPosition);
             sleep(1000);
+          }
+          
+          if (gamepad2.right_bumper){
+            flywheel.setPower(0.69);
+          } else {
+            flywheel.setPower(0.52);
           }
           
           
@@ -162,7 +169,7 @@ public class Meet0TeleOp extends LinearOpMode {
       //   flywheel.setPower(0.87);
       // } else 
       if (gamepad2.a){
-        intakeM.setPower(0.7);
+        intakeM.setPower(0.8);
       } else {
         // flywheel.setPower(0);
         intakeM.setPower(0);
