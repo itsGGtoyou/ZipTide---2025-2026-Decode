@@ -99,18 +99,18 @@ public class Meet0TeleOp extends LinearOpMode {
         armM.setPower(yInputtedPower); or armM.setPower(gamepad2.left_stick_y); */
 
         //servo set positions
-          //open
+          flywheel.setPower(0.87);
+        
           if (gamepad2.dpad_down){
-            gateSPosition = 0.9;
-            gateS.setPosition(gateSPosition);
-            sleep(1000);
-          }
-          //close
-          if (gamepad2.dpad_up){
             gateSPosition = 1;
             gateS.setPosition(gateSPosition);
+            sleep(500);
+            gateSPosition = 0.8;
+            gateS.setPosition(gateSPosition);
             sleep(1000);
           }
+          
+          
 
      
 
@@ -118,14 +118,14 @@ public class Meet0TeleOp extends LinearOpMode {
   //MECANUM WHEELS
       //here we are setting our analog values to variables (this is basically what we did to the arm)
         forward = gamepad1.left_stick_y;
-        rotate = gamepad1.right_stick_x;
-        strafe = gamepad1.left_stick_x;
+        rotate = gamepad1.left_stick_x;
+        strafe = gamepad1.right_stick_x;
       //This is how we end up setting those values
       //You don't really have to memorize something like this just sorta keep in mind how this works
-        frontLeftPower = forward - (strafe + rotate);
-        frontRightPower = forward + (strafe + rotate);
-        backLeftPower = forward + (strafe - rotate);
-        backRightPower = forward - (strafe - rotate);
+        frontLeftPower = forward + (strafe + rotate);
+        frontRightPower = forward - (strafe + rotate);
+        backLeftPower = forward - (strafe - rotate);
+        backRightPower = forward + (strafe - rotate);
 
       //using Java methods you get the maximum power that the motors can reach
       //this is also something you don't really have to worry about understand for FTC coding reasons but it is tapping into more aspects of Java programming outside of robotics
@@ -158,13 +158,14 @@ public class Meet0TeleOp extends LinearOpMode {
         backRightM.setPower(backRightPower / 2);
       }
       //ASSIGN POWER LAUNCHER/INTAKE
-      if (gamepad2.y){
-          flywheel.setPower(0.87);
-      } else if (gamepad2.a){
-          intakeM.setPower(0.7);
+      // if (gamepad2.y){
+      //   flywheel.setPower(0.87);
+      // } else 
+      if (gamepad2.a){
+        intakeM.setPower(0.7);
       } else {
-          flywheel.setPower(0);
-          intakeM.setPower(0);
+        // flywheel.setPower(0);
+        intakeM.setPower(0);
       }
       
       // Show the elapsed game time and wheel power.
