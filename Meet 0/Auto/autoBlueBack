@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,6 +12,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
+
 //import com.qualcomm.robotcore.util.Hardware;
 
 import com.qualcomm.robotcore.robot.Robot;
@@ -25,6 +31,7 @@ public class autoBlueBack extends LinearOpMode {
   private DcMotor frontRightM;
   private DcMotor intakeM;
   private DcMotor flywheel;
+  private DcMotor flywheel2;
 
   private Servo gateS;
   
@@ -32,6 +39,16 @@ public class autoBlueBack extends LinearOpMode {
   private int newFrontRightTarget;
   private int newBackLeftTarget;
   private int newBackRightTarget;
+  private int newIntake;
+  private int newLaunch;
+  
+  // private FirstVisionProcessor visionProcessor;
+  private VisionPortal visionPortal;
+  
+  private double time1;
+  private double time2;
+  private double distance1;
+  private double distance2;
     
   @Override
   public void runOpMode() throws InterruptedException {
@@ -41,12 +58,15 @@ public class autoBlueBack extends LinearOpMode {
       backLeftM = hardwareMap.get(DcMotor.class, "backLeftM");
       intakeM = hardwareMap.get(DcMotor.class, "intakeM");
       flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+      flywheel2 = hardwareMap.get(DcMotor.class, "flywheel2");
+      gateS = hardwareMap.get(Servo.class, "gateS");
       
       frontRightM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       backRightM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       frontLeftM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       backLeftM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       intakeM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       
       frontLeftM.setDirection(DcMotor.Direction.REVERSE);
@@ -55,6 +75,7 @@ public class autoBlueBack extends LinearOpMode {
       backRightM.setDirection(DcMotor.Direction.FORWARD);
       intakeM.setDirection(DcMotor.Direction.REVERSE);
       flywheel.setDirection(DcMotor.Direction.REVERSE);
+      flywheel.setDirection(DcMotor.Direction.REVERSE);
       
       frontLeftM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       frontRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -62,18 +83,34 @@ public class autoBlueBack extends LinearOpMode {
       backRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       intakeM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-       
+      flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      
       
       waitForStart();
-
-        launch(100);
-        sleep(1000);
-        launch(100);
-        sleep(1000);
-        launch(100);
-        sleep(1000);
-        drive(0.2, -7, -5, "straight");
-        drive(0.2, 10, 10, "straight");
+        
+        closeGate();
+        sleep(500);
+        flywheel.setPower(0.69);
+        sleep(8000);
+        openGate();
+        sleep(500);
+        closeGate();
+        sleep(500);
+        sleep(5000);
+        openGate();
+        sleep(500);
+        closeGate();
+        sleep(500);
+        sleep(5000);
+        openGate();
+        sleep(500);
+        closeGate();
+        sleep(500);
+        
+        drive(0.2, 15, 15, "straight");
+        
+        
+        
 
     }
 
@@ -84,6 +121,7 @@ public class autoBlueBack extends LinearOpMode {
       frontLeftM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       frontRightM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       intakeM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      flywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       flywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     
@@ -139,6 +177,7 @@ public class autoBlueBack extends LinearOpMode {
         sleep(300);
     }
 
+
     private void intake(int intake) {
       reset();
       intake *= 45;
@@ -146,7 +185,7 @@ public class autoBlueBack extends LinearOpMode {
       newIntake = intake;
       
       intakeM.setTargetPosition(newIntake);
-      telemetry.addData("scooping up");
+      telemetry.addData("scooping...", "INTO THE ROBOT");
       telemetry.update();
         
       intakeM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -161,37 +200,50 @@ public class autoBlueBack extends LinearOpMode {
       sleep(300);
     }
 
-    public void openGate(){
-      gateS.setPosition(1);
-    }
-    public void closeGate(){
-      gateS.setPosition(0.7);
-    }
-
-    private void launch(int launch) {
+    private void launch(double power) {
       reset();
-      launch *= 45;
+      //launch *= 45;
       
-      newLaunch = launch;
+      //newLaunch = launch;
 
-      openGate();
-      
-      flywheel.setTargetPosition(newLaunch);
-      telemetry.addData("weeeeeeee!");
+      //flywheel.setTargetPosition(newLaunch);
+      telemetry.addData("weeeeeeee!", "up up and awayyy");
       telemetry.update();
         
-      flywheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+     // flywheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       
-      flywheel.setPower(0.87);
+      flywheel.setPower(power);
           
       while(opModeIsActive() && intakeM.isBusy() && flywheel.isBusy()) {
         telemetry.addData("Path1",  "Running to %7d :%7d %7d :%7d", newLaunch);
         telemetry.addData("Path2",  "Running at %7d :%7d :%7d :%7d", flywheel.getCurrentPosition());
         telemetry.update();
       }
+      
+      sleep(5000);
 
-      closeGate();
-
-      sleep(300);
     }
+    
+
+    
+    public void openGate(){
+      gateS.setPosition(1);
+    }
+    public void closeGate(){
+      gateS.setPosition(0.8);
+    }
+    
+    // public void rpmTacker(){
+      
+    // }
+    // public void fullLaunch(double power, int launch){
+    //   // openGate();
+    //   // sleep(1000);
+    //   launch(power, launch);
+    //   sleep(1000);
+    //   openGate();
+    //   sleep(500);
+    //   closeGate();
+    //   sleep(500);
+    // }
 }
