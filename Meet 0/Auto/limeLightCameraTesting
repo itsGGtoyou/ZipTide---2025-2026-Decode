@@ -6,7 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.hardware.limelightvision.LimeLight3A;
 import com.qualcomm.hardware.rev.RebHubOrientationOnRobot;
 
-@Autonomous
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
+//@Autonomous
 
 public class limeLightCameraTesting extends OpMode{
 
@@ -27,9 +31,21 @@ public class limeLightCameraTesting extends OpMode{
     limelight.start();
   }
 
-  //@Override
-  //public void loop(){
+  @Override
+  public void loop(){
+    YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+    limelight.updateRobotOrientation(orientation.getYaw());
 
-  //}
+    LLResult llResult = limelight.getLatestResult();
+    if (llResult != null && llResult.isValid()){
+      Pose3D botPose = llResult.getBotpose();
+      telemetry.addData("Tx", llRestul.getTx());
+      telemetry.addData("Ty", llRestul.getTy());      
+      telemetry.addData("Ta", llRestul.getTa());
+      telemetry.addData("BotPose", botpose.toString());
+      telemetry.addData("Yaw", botPose.getOrientation().getYaw());
+      telemetry.addData("Tag ID", detectedAprilTag.id);
+    }
+  }
   
 }
