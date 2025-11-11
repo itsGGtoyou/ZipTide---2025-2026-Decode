@@ -1,28 +1,100 @@
+// package org.firstinspires.ftc.teamcode;
+
+// import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+// import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+// import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+// import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+// import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+// import com.qualcomm.hardware.limelightvision.LLResult;
+// import com.qualcomm.robotcore.hardware.IMU;
+// import com.qualcomm.hardware.limelightvision.Limelight3A;
+// import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
+// import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+// import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
+// import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+// import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+// import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
+// @Autonomous
+
+// public class limeLightCameraTesting extends OpMode{
+
+//   private Limelight3A limelight;
+//   private IMU imu;
+  
+//   @Override
+//   public void init(){
+//     limelight = hardwareMap.get(Limelight3A.class, "Ethernet Device");
+//     limelight.pipelineSwitch(8);
+//     imu = hardwareMap.get(IMU.class, "imu");
+//     RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+//     imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
+//   }
+
+//   @Override
+//   public void start(){
+//     limelight.start();
+//   }
+
+//   @Override
+//   public void loop(){
+//     YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+//     limelight.updateRobotOrientation(orientation.getYaw());
+
+//     LLResult llResult = limelight.getLatestResult();
+//     if (llResult != null && llResult.isValid()){
+//       Pose3D botPose = llResult.getBotpose();
+//       telemetry.addData("Tx", llResult.getTx());
+//       telemetry.addData("Ty", llResult.getTy());      
+//       telemetry.addData("Ta", llResult.getTa());
+//       telemetry.addData("BotPose", botPose.toString());
+//       telemetry.addData("Yaw", botPose.getOrientation().getYaw());
+//       telemetry.addData("Tag ID", detectedAprilTag.id);
+//     }
+//   }
+  
+// }
+
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.hardware.limelightvision.LimeLight3A;
-import com.qualcomm.hardware.rev.RebHubOrientationOnRobot;
+import java.util.ArrayList;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-//@Autonomous
+@Autonomous
 
 public class limeLightCameraTesting extends OpMode{
 
-  private LimeLight3A limelight;
+  private Limelight3A limelight;
   private IMU imu;
+
+  private List<AprilTagDetection> detectedTags = new ArrayList<>();
+  
   
   @Override
   public void init(){
-    limelight = hardwareMap.get(LimeLight3A.class, "Ethernet Device");
+    limelight = hardwareMap.get(Limelight3A.class, "Ethernet Device");
     limelight.pipelineSwitch(8);
     imu = hardwareMap.get(IMU.class, "imu");
-    RevHubOrientationOnRobot revHubOrintationOnRobot = new RevHubOrinetationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+    RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
     imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
   }
 
@@ -39,13 +111,31 @@ public class limeLightCameraTesting extends OpMode{
     LLResult llResult = limelight.getLatestResult();
     if (llResult != null && llResult.isValid()){
       Pose3D botPose = llResult.getBotpose();
-      telemetry.addData("Tx", llRestul.getTx());
-      telemetry.addData("Ty", llRestul.getTy());      
-      telemetry.addData("Ta", llRestul.getTa());
-      telemetry.addData("BotPose", botpose.toString());
+      telemetry.addData("Tx", llResult.getTx());
+      telemetry.addData("Ty", llResult.getTy());      
+      telemetry.addData("Ta", llResult.getTa());
+      telemetry.addData("BotPose", botPose.toString());
       telemetry.addData("Yaw", botPose.getOrientation().getYaw());
-      telemetry.addData("Tag ID", detectedAprilTag.id);
+      // telemetry.addData("Tag ID", AprilTagProcessor.getDetections().id);
     }
   }
   
+  // public void update(){
+  //   detectedTags = AprilTagProcessor.getDetections();
+  // }
+
+  public List<AprilTagDetection> getDetectedTags(){
+    return detectedTags;
+  }
+
+  public AprilTagDetection getTagBySpecificId(int id){
+    for (AprilTagDetection detection : detectedTags){
+      if (detection.id == id){
+        return detection;
+      }
+    }
+    return null;
+  }
+  
 }
+
