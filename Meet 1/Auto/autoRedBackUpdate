@@ -1,0 +1,299 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
+
+//import com.qualcomm.robotcore.util.Hardware;
+
+import com.qualcomm.robotcore.robot.Robot;
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
+
+@Autonomous(name="autoRedBackUpdate", group="Linear Opmode")
+
+public class autoRedBackUpdate extends LinearOpMode {
+  private ElapsedTime runtime = new ElapsedTime();
+  private DcMotor backLeftM;
+  private DcMotor backRightM;
+  private DcMotor frontLeftM;
+  private DcMotor frontRightM;
+  private DcMotorEx intakeM;
+  private DcMotorEx flywheel;
+  private DcMotor flywheel2;
+
+  private Servo gateS;
+  
+  private int newFrontLeftTarget;
+  private int newFrontRightTarget;
+  private int newBackLeftTarget;
+  private int newBackRightTarget;
+  private int newIntake;
+  private int newLaunch;
+  
+  // private FirstVisionProcessor visionProcessor;
+  private VisionPortal visionPortal;
+  
+  private double time1;
+  private double time2;
+  private double distance1;
+  private double distance2;
+  
+  private double flywheelPower;
+    
+  @Override
+  public void runOpMode() throws InterruptedException {
+      frontRightM = hardwareMap.get(DcMotor.class, "frontRightM");
+      backRightM = hardwareMap.get(DcMotor.class, "backRightM");
+      frontLeftM = hardwareMap.get(DcMotor.class, "frontLeftM");
+      backLeftM = hardwareMap.get(DcMotor.class, "backLeftM");
+      intakeM = hardwareMap.get(DcMotorEx.class, "intakeM");
+      flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
+      flywheel2 = hardwareMap.get(DcMotor.class, "flywheel2");
+      gateS = hardwareMap.get(Servo.class, "gateS");
+      
+      frontRightM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      backRightM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      frontLeftM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      backLeftM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      intakeM.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+      flywheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+      // flywheel2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+      
+      frontLeftM.setDirection(DcMotor.Direction.FORWARD);
+      frontRightM.setDirection(DcMotor.Direction.REVERSE);
+      backLeftM.setDirection(DcMotor.Direction.FORWARD);
+      backRightM.setDirection(DcMotor.Direction.REVERSE);
+      intakeM.setDirection(DcMotorEx.Direction.REVERSE);
+      flywheel.setDirection(DcMotorEx.Direction.REVERSE);
+      // flywheel2.setDirection(DcMotor.Direction.REVERSE);
+      
+      frontLeftM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      frontRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      backLeftM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      backRightM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      intakeM.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+      flywheel.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+      // flywheel2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      
+      
+      waitForStart();
+      
+        //start setup
+        gateS.setPosition(0.8);
+        sleep(500);
+        flywheel.setVelocity(1650);
+        sleep(3000);
+        
+        //LAUNCH #1
+        threeLaunch();
+        
+        //LAUNCH #2
+        
+        //drive to close pickup
+        drive(0.4, 3, 3, "straight");
+        drive(0.5, 22, -22, "straight");
+        drive(0.5, 31, 31, "right");
+        
+        //pickup three
+        intakeM.setVelocity(2000);
+        drive(0.5, -36, -36, "straight");
+        intakeM.setVelocity(0);
+        
+        //drive to launch zone
+        drive(0.5, 31, 31, "straight");
+        sleep(100);
+        intakeM.setVelocity(2000);
+        flywheel.setVelocity(1640); // <- flywheel
+        drive(0.5, 28, 28, "left");
+        drive(0.5, -21, 21, "straight");
+        
+        //launch
+        
+        threeLaunch();
+        
+        drive(1, 15, 15, "straight");
+        
+        //LAUNCH #3
+        
+        //drive to far pickup
+        // drive(0.4, 4, 4, "straight");
+        // drive(0.5, 20, -20, "straight");
+        // drive(0.5, 53, 53, "right");
+        
+        // //pickup three
+        // intakeM.setVelocity(2000);
+        // drive(0.5, -33, -33, "straight");
+        // intakeM.setVelocity(0);
+        
+        //drive to launch zone
+        // drive(0.5, 34, 34, "straight");
+        // sleep(100);
+        
+        // drive(0.5, 40, 40, "left");
+        // flywheel.setVelocity(1610); // <- flywheel
+        // drive(0.5, 52, 52, "left");
+        // drive(0.5, -22, 22, "straight");
+        
+        // //launch
+        // threeLaunch();
+        
+        // "park"
+        // drive(1, 15, 15, "straight");
+        
+        
+        // while(opModeIsActive()) {
+        //   flywheelPower = flywheel.getVelocity();
+        //   telemetry.addData("Weeeeeee",  "Launching at %.2f", flywheelPower);
+        //   telemetry.update();
+        
+        // }
+    }
+
+
+    private void reset(){
+      backLeftM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      backRightM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      frontLeftM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      frontRightM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      intakeM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      flywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      flywheel2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+    
+    private void drive(double speed, int leftTarget, int rightTarget, String direction) {
+      reset();
+      leftTarget *= 45;
+      rightTarget *= 45;
+      
+      newFrontLeftTarget = leftTarget;
+      newFrontRightTarget = rightTarget;
+      newBackLeftTarget = leftTarget;
+      newBackRightTarget = rightTarget;
+      
+      if(direction == "straight") {
+        frontLeftM.setTargetPosition(newFrontLeftTarget);
+        frontRightM.setTargetPosition(newFrontRightTarget);
+        backLeftM.setTargetPosition(newBackLeftTarget);
+        backRightM.setTargetPosition(newBackRightTarget);
+        telemetry.addData("Moving", "straight");
+        telemetry.update();
+      } else if (direction == "left") {
+        frontLeftM.setTargetPosition(-newFrontLeftTarget);
+        frontRightM.setTargetPosition(newFrontRightTarget);
+        backLeftM.setTargetPosition(newBackLeftTarget);
+        backRightM.setTargetPosition(-newBackRightTarget);
+        telemetry.addData("Moving", "left");
+        telemetry.update();
+      } else if (direction == "right") {
+        frontLeftM.setTargetPosition(newFrontLeftTarget);
+        frontRightM.setTargetPosition(-newFrontRightTarget);
+        backLeftM.setTargetPosition(-newBackLeftTarget);
+        backRightM.setTargetPosition(newBackRightTarget);
+        telemetry.addData("Moving", "right");
+        telemetry.update();
+      }
+        
+      frontLeftM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      frontRightM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      backLeftM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      backRightM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      
+      frontLeftM.setPower(speed);
+      frontRightM.setPower(speed);
+      backLeftM.setPower(speed);
+      backRightM.setPower(speed);
+        
+        
+        while(opModeIsActive() && frontLeftM.isBusy() && frontRightM.isBusy() && backLeftM.isBusy() && backRightM.isBusy()) {
+          telemetry.addData("Path1",  "Running to %7d :%7d %7d :%7d", newFrontLeftTarget,  newFrontRightTarget, newBackLeftTarget, newBackRightTarget);
+          telemetry.addData("Path2",  "Running at %7d :%7d :%7d :%7d", frontLeftM.getCurrentPosition(), frontRightM.getCurrentPosition(), backLeftM.getCurrentPosition(), backRightM.getCurrentPosition());
+            telemetry.update();
+        }  
+        sleep(300);
+    }
+
+
+    // private void intake(int intake) {
+    //   reset();
+    //   intake *= 45;
+      
+    //   newIntake = intake;
+      
+    //   intakeM.setTargetPosition(newIntake);
+    //   telemetry.addData("scooping...", "INTO THE ROBOT");
+    //   telemetry.update();
+        
+    //   intakeM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      
+    //   intakeM.setPower(0.7);
+          
+    //   while(opModeIsActive() && intakeM.isBusy() && flywheel.isBusy()) {
+    //     telemetry.addData("Path1",  "Running to %7d :%7d %7d :%7d", newIntake);
+    //     telemetry.update();
+    //   }
+    //   sleep(300);
+    // }
+    
+    private void intake(){
+      intakeM.setVelocity(1600);
+      frontRightM.setPower(-0.4);
+      frontLeftM.setPower(-0.4);
+      backRightM.setPower(-0.4);
+      backLeftM.setPower(-0.4);
+      sleep(2000);
+      intakeM.setVelocity(0);
+    }
+
+    // private void launch(double power) {
+    //   reset();
+    //   //launch *= 45;
+      
+    //   //newLaunch = launch;
+
+    //   //flywheel.setTargetPosition(newLaunch);
+    //   telemetry.addData("weeeeeeee!", "up up and awayyy");
+    //   telemetry.update();
+        
+    // // flywheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      
+    //   flywheel.setPower(power);
+          
+    //   while(opModeIsActive()) {
+    //     telemetry.addData("launching",  "Running at %.2f", flywheel.getVelocity());
+    //     telemetry.update();
+    //   }
+      
+    //   sleep(5000);
+
+    // }
+    
+    public void openGate(){
+      gateS.setPosition(1);
+      sleep(500);
+      gateS.setPosition(0.8);
+      sleep(1000);
+    }
+    
+    private void threeLaunch(){
+      openGate();
+      openGate();
+      openGate();
+    }
+    
+    // public void rpmTacker(Double time1, Double time2, Double distance1, Double distance 2){
+      
+    // }
+}
